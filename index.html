@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Be Mine?</title>
+  <title>Will you be mine?</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="A cute little page with a playful Yes/No to ask you out.">
 </head>
 <body>
   <main class="card">
     <h1 class="header_text">Will you be mine?</h1>
-    <p class="text">Jhumke bhi bole, nath bhi bole — bas tum haa kar do! 💙</p>
+    <p class="text">Jhumke bhi bole, nath bhi bole — bas tum “haa” kar do! 💙</p>
 
     <div class="buttons" id="buttons">
       <button id="yesButton" class="btn">Yes</button>
@@ -18,14 +19,14 @@
     </div>
 
     <p class="footnote">
-      Made with a lot of pyaar <a href="#" aria-hidden="true">❤</a>
+      Made with pyaar <a href="#" aria-hidden="true">❤</a>
     </p>
   </main>
 
   <dialog id="loveModal" class="modal">
     <div class="modal-content">
       <h2>You just made my day!</h2>
-      <p>Chalo, ab coffee date fix? ☕</p>
+      <p>Chalo, coffee date fix? ☕</p>
       <div class="gif_container">
         <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Happy dance" width="220" height="220" loading="lazy">
       </div>
@@ -34,29 +35,112 @@
   </dialog>
 
   <script>
+    // Elements
+    const container = document.getElementById('buttons');
     const noBtn = document.getElementById('noButton');
     const yesBtn = document.getElementById('yesButton');
     const modal = document.getElementById('loveModal');
     const closeModal = document.getElementById('closeModal');
 
-    // Make the "No" button dodge the cursor
-    function moveNoButton() {
-      const container = document.getElementById('buttons').getBoundingClientRect();
-      const maxX = container.width - noBtn.offsetWidth;
-      const maxY = container.height - noBtn.offsetHeight;
-      const x = Math.max(0, Math.min(maxX, Math.random() * maxX));
-      const y = Math.max(0, Math.min(maxY, Math.random() * maxY));
-      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    // Utility
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    // Init placement relative to viewport for maximum chaos
+    function randomPlaceInViewport() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const bw = noBtn.offsetWidth;
+      const bh = noBtn.offsetHeight;
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = Math.random() * (w - bw) + 'px';
+      noBtn.style.top  = Math.random() * (h - bh) + 'px';
     }
 
-    // Desktop hover and mobile tap support
-    noBtn.addEventListener('mouseenter', moveNoButton);
+    // Teleport far away instantly
+    function teleportNo() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const bw = noBtn.offsetWidth;
+      const bh = noBtn.offsetHeight;
+      const x = Math.random() * (w - bw);
+      const y = Math.random() * (h - bh);
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = x + 'px';
+      noBtn.style.top  = y + 'px';
+    }
+
+    // Aggressive flee from cursor proximity
+    function fleeFromCursor(e) {
+      const rect = noBtn.getBoundingClientRect();
+      const cx = e.clientX, cy = e.clientY;
+      const bx = rect.left + rect.width / 2;
+      const by = rect.top  + rect.height / 2;
+
+      const dx = bx - cx;
+      const dy = by - cy;
+      const dist = Math.hypot(dx, dy) || 1;
+
+      // Increase upper bound for more aggression
+      const force = clamp(3200 / dist, 18, 120); // tune 120->200 for wild mode
+      const nx = dx / dist, ny = dy / dist;
+
+      const jitter = 40;
+      let targetLeft = rect.left + nx * force + (Math.random() * jitter - jitter/2);
+      let targetTop  = rect.top  + ny * force + (Math.random() * jitter - jitter/2);
+
+      const w = window.innerWidth, h = window.innerHeight;
+      const bw = rect.width, bh = rect.height;
+
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = clamp(targetLeft, 0, w - bw) + 'px';
+      noBtn.style.top  = clamp(targetTop,  0, h - bh) + 'px';
+    }
+
+    // Random burst drift to keep it moving
+    let driftTimer = null;
+    function startDrift() {
+      stopDrift();
+      driftTimer = setInterval(() => {
+        const rect = noBtn.getBoundingClientRect();
+        const w = window.innerWidth, h = window.innerHeight;
+        const bw = rect.width, bh = rect.height;
+        const jump = 120 + Math.random() * 200; // distance per burst
+        const angle = Math.random() * Math.PI * 2;
+        const targetLeft = clamp(rect.left + Math.cos(angle) * jump, 0, w - bw);
+        const targetTop  = clamp(rect.top  + Math.sin(angle) * jump, 0, h - bh);
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = targetLeft + 'px';
+        noBtn.style.top  = targetTop  + 'px';
+      }, 220); // lower = more aggressive
+    }
+    function stopDrift() { if (driftTimer) { clearInterval(driftTimer); driftTimer = null; } }
+
+    // Wire up events
+    randomPlaceInViewport();
+    startDrift();
+
+    // Strong flee on mouse move
+    window.addEventListener('mousemove', fleeFromCursor, { passive: true });
+
+    // Immediate teleport on hover
+    noBtn.addEventListener('mouseenter', teleportNo);
+
+    // Touch: dodge and prevent presses
     noBtn.addEventListener('touchstart', (e) => {
       e.preventDefault();
-      moveNoButton();
+      teleportNo();
     }, { passive: false });
 
-    // Yes button opens the modal
+    // Block clicking "No"
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      teleportNo();
+    });
+
+    // Keep within viewport after resize
+    window.addEventListener('resize', teleportNo);
+
+    // Yes -> show modal
     yesBtn.addEventListener('click', () => {
       if (typeof modal.showModal === 'function') modal.showModal();
       else alert('You just made my day! Chalo, coffee date? ☕');

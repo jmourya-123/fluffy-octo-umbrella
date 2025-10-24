@@ -8,9 +8,7 @@
 
 * { box-sizing: border-box; }
 
-html, body {
-  height: 100%;
-}
+html, body { height: 100%; }
 
 body {
   margin: 0;
@@ -46,13 +44,13 @@ body {
 }
 
 .buttons {
-  position: relative; /* for the dodging No button */
+  position: relative; /* container for initial layout of Yes; No is moved with position:fixed */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   margin: 16px auto 8px;
-  min-height: 52px; /* space so No button can move */
+  min-height: 52px;
 }
 
 .btn {
@@ -68,10 +66,7 @@ body {
   box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
-.btn:hover { 
-  background-color: white; 
-  color: var(--primary); 
-}
+.btn:hover { background-color: white; color: var(--primary); }
 
 .btn:focus-visible {
   outline: 3px solid white;
@@ -83,12 +78,15 @@ body {
   color: white;
 }
 
-#noButton {
-  position: relative; /* will be moved via transform */
-}
-
 #yesButton {
   background: linear-gradient(135deg, var(--primary), var(--primary-ink));
+}
+
+/* No button motion smoothing controlled by script */
+#noButton {
+  position: fixed; /* script uses fixed to run across the viewport */
+  transition: left 0.06s linear, top 0.06s linear, transform 0.05s linear;
+  will-change: left, top, transform;
 }
 
 .gif_container {
@@ -119,9 +117,7 @@ body {
   color: white;
 }
 
-.modal::backdrop {
-  background: rgba(0,0,0,0.55);
-}
+.modal::backdrop { background: rgba(0,0,0,0.55); }
 
 .modal-content {
   padding: 24px 22px;
