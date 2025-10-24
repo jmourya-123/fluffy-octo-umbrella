@@ -104,7 +104,7 @@
         const rect = noBtn.getBoundingClientRect();
         const w = window.innerWidth, h = window.innerHeight;
         const bw = rect.width, bh = rect.height;
-        const jump = 120 + Math.random() * 200; // distance per burst
+        const jump = 120 + Math.random() * 2000; // distance per burst
         const angle = Math.random() * Math.PI * 2;
         const targetLeft = clamp(rect.left + Math.cos(angle) * jump, 0, w - bw);
         const targetTop  = clamp(rect.top  + Math.sin(angle) * jump, 0, h - bh);
