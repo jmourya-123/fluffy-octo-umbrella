@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Be Mine?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="card">
+    <h1 class="header_text">Will you be mine?</h1>
+    <p class="text">Jhumke bhi bole, nath bhi bole — bas tum haa kar do! 💙</p>
+
+    <div class="buttons" id="buttons">
+      <button id="yesButton" class="btn">Yes</button>
+      <button id="noButton" class="btn btn-ghost" aria-label="No">No</button>
+    </div>
+
+    <p class="footnote">
+      Made with a lot of pyaar <a href="#" aria-hidden="true">❤</a>
+    </p>
+  </main>
+
+  <dialog id="loveModal" class="modal">
+    <div class="modal-content">
+      <h2>You just made my day!</h2>
+      <p>Chalo, ab coffee date fix? ☕</p>
+      <div class="gif_container">
+        <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Happy dance" width="220" height="220" loading="lazy">
+      </div>
+      <button class="btn" id="closeModal">Aww, ok!</button>
+    </div>
+  </dialog>
+
+  <script>
+    const noBtn = document.getElementById('noButton');
+    const yesBtn = document.getElementById('yesButton');
+    const modal = document.getElementById('loveModal');
+    const closeModal = document.getElementById('closeModal');
+
+    // Make the "No" button dodge the cursor
+    function moveNoButton() {
+      const container = document.getElementById('buttons').getBoundingClientRect();
+      const maxX = container.width - noBtn.offsetWidth;
+      const maxY = container.height - noBtn.offsetHeight;
+      const x = Math.max(0, Math.min(maxX, Math.random() * maxX));
+      const y = Math.max(0, Math.min(maxY, Math.random() * maxY));
+      noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    }
+
+    // Desktop hover and mobile tap support
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    // Yes button opens the modal
+    yesBtn.addEventListener('click', () => {
+      if (typeof modal.showModal === 'function') modal.showModal();
+      else alert('You just made my day! Chalo, coffee date? ☕');
+    });
+
+    // Close modal
+    closeModal.addEventListener('click', () => modal.close());
+  </script>
+</body>
+</html>
