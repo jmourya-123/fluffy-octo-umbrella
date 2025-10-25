@@ -6,9 +6,13 @@
   --primary-ink: #0b5dcc;
 }
 
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box; 
+}
 
-html, body { height: 100%; }
+html, body { 
+  height: 100%; 
+}
 
 body {
   margin: 0;
@@ -44,7 +48,7 @@ body {
 }
 
 .buttons {
-  position: relative; /* container for initial layout of Yes; No is moved with position:fixed */
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -66,7 +70,10 @@ body {
   box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 
-.btn:hover { background-color: white; color: var(--primary); }
+.btn:hover { 
+  background-color: white; 
+  color: var(--primary); 
+}
 
 .btn:focus-visible {
   outline: 3px solid white;
@@ -82,11 +89,11 @@ body {
   background: linear-gradient(135deg, var(--primary), var(--primary-ink));
 }
 
-/* No button motion smoothing controlled by script */
+/* No button moves across viewport */
 #noButton {
-  position: fixed; /* script uses fixed to run across the viewport */
-  transition: left 0.06s linear, top 0.06s linear, transform 0.05s linear;
-  will-change: left, top, transform;
+  position: fixed;
+  transition: left 0.08s ease-out, top 0.08s ease-out;
+  will-change: left, top;
 }
 
 .gif_container {
@@ -117,7 +124,9 @@ body {
   color: white;
 }
 
-.modal::backdrop { background: rgba(0,0,0,0.55); }
+.modal::backdrop { 
+  background: rgba(0,0,0,0.55); 
+}
 
 .modal-content {
   padding: 24px 22px;
