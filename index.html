@@ -81,7 +81,7 @@
       const dist = Math.hypot(dx, dy) || 1;
 
       // Increase upper bound for more aggression
-      const force = clamp(3200 / dist, 18, 120); // tune 120->200 for wild mode
+      const force = clamp(3200 / dist, 18, 125); // tune 120->200 for wild mode
       const nx = dx / dist, ny = dy / dist;
 
       const jitter = 40;
@@ -151,9 +151,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
